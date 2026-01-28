@@ -2,13 +2,12 @@ import json, time, os
 from dotenv import load_dotenv
 from groq import Groq
 from schemas import Shipment
-from prompts import PROMPT_V1
+from prompts import PROMPT_V2
 from tqdm import tqdm
 
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-print("API KEY LOADED:", bool(os.getenv("GROQ_API_KEY")))
 
 
 # Load input files
@@ -38,7 +37,7 @@ def call_llm(prompt, retries=3):
 results = []
 
 for email in tqdm(emails):
-    prompt = PROMPT_V1.format(
+    prompt = PROMPT_V2.format(
         subject=email["subject"],
         body=email["body"]
     )
@@ -75,7 +74,6 @@ for email in tqdm(emails):
 
     except Exception as ex:
         print("Parse error:", ex)
-        print("RAW:", raw)
 
         results.append(Shipment(
             id=email["id"],
